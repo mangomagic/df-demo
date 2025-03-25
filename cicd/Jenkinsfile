@@ -62,9 +62,9 @@ pipeline {
         failure {
             echo 'Pipeline failed!'
         }
-        always {
+        // always {
             // Clean up workspace
             // cleanWs()
-        }
+        // }
     }
 }
