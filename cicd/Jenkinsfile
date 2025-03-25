@@ -3,6 +3,7 @@ pipeline {
 
     // Environment variables
     environment {
+        EXAMPLE = 'TEST'
     }
 
     stages {
