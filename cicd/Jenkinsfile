@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from the GitHub repository
-                git branch: 'net6.0', url: 'https://github.com/dodyg/practical-aspnetcore.git'
+                git url: 'https://github.com/dodyg/practical-aspnetcore.git', branch: 'net6.0'
             }
         }
 
