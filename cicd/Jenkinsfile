@@ -1,71 +1,78 @@
 pipeline {
-    agent any
-
-    // Environment variables
-    environment {
-        EXAMPLE = 'TEST'
-    }
+    agent any // assumes dotnet installed on build agent
 
     stages {
         stage('Checkout') {
             steps {
                 // Checkout code from the GitHub repository
-                // This step could alternatively be defined in the job definition
-                sh 'git clone -b net6.0 https://github.com/dodyg/practical-aspnetcore.git'
+                git url: 'https://github.com/dodyg/practical-aspnetcore.git', branch: 'net6.0'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the .NET project...'
+                dir('projects/testing/nunit-1/src') {
+                    echo 'Building the .NET project...'
 
-                // Show .NET version
-                sh 'dotnet --version'
+                    // Show .NET version
+                    sh 'dotnet --version'
 
-                // Restore dependencies
-                sh 'dotnet restore projects/testing/nunit-1'
+                    // Ensure clean build
+                    sh 'dotnet clean'
 
-                // Build the project
-                sh 'dotnet build projects/testing/nunit-1 --configuration Release --no-restore'
+                    // Restore dependencies
+                    sh 'dotnet restore'
+
+                    // Build the project
+                    sh 'dotnet build --configuration Release --no-restore'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running unit tests...'
-                // Run NUnit tests
-                sh 'dotnet test projects/testing/nunit-1 --configuration Release --no-build --logger "console;verbosity=detailed"'
+                dir('projects/testing/nunit-1/tests') {
+                    echo 'Running unit tests...'
+
+                    // Run Unit tests
+                    sh 'dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying the application...'
+                dir('projects/testing/nunit-1/src') {
+                    echo 'Deploying the application...'
 
-                // Create publish directory
-                sh 'mkdir -p publish'
+                    // Create publish directory
+                    sh 'mkdir -p publish'
 
-                // Publish the application
-                sh 'dotnet publish projects/testing/nunit-1 --configuration Release --output publish --no-build'
+                    // Publish the application
+                    sh 'dotnet publish --configuration Release --output publish --no-build'
 
-                // Archive the artifacts
-                // archiveArtifacts artifacts: 'publish/**', fingerprint: true
+                    // Archive the artifacts
+                    archiveArtifacts artifacts: 'publish/**', fingerprint: true
 
-                echo 'Deployment completed successfully'
+                    echo 'Deployment completed successfully'
+                }
             }
         }
     }
 
-    // post {
-    //     success {
-    //         echo 'Pipeline completed successfully!'
-    //     }
-    //     failure {
-    //         echo 'Pipeline failed!'
-    //     }
-    //     // always {
-    //         // Clean up workspace
-    //         // cleanWs()
-    //     // }
-    // }
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+        always {
+            // Clean up workspace (requires https://plugins.jenkins.io/ws-cleanup/)
+            cleanWs(cleanWhenNotBuilt: false,
+                deleteDirs: true,
+                disableDeferredWipeout: true,
+                notFailBuild: true)
+        }
+    }
 }
