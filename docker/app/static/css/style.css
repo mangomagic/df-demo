@@ -218,7 +218,5 @@ form {
     margin: 0;
 }
 .about-image {
-    max-width: 984px;
-    margin: 0 auto;
-    display: block;
+    max-width: 680px;
 }
