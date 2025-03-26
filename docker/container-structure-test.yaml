@@ -1,0 +1,27 @@
+# Container Structure Tests for Demo Docker App
+schemaVersion: 2.0.0
+metadataTest:
+  user: appuser
+commandTests:
+  - name: "Python version check"
+    command: "python"
+    args: ["-V"]
+    expectedOutput: ["Python 3.10."]
+  - name: "Dependency check"
+    command: "gunicorn"
+    args: ["-v"]
+    expectedOutput: ["gunicorn"]
+  - name: "Application version check"
+    command: "poetry"
+    args: ["version"]
+    expectedOutput: ["fantastic-ferries 0.1.0"]
+  - name: "Non-root user"
+    command: "whoami"
+    args: []
+    excludedOutput: ["root"]
+fileExistenceTests:
+- name: "Check app dir"
+  path: "app"
+  shouldExist: true
+  uid: 1000
+  permissions: 'drwxr-xr-x'
