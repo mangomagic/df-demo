@@ -1,0 +1,18 @@
+<!-- templates/order_complete.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>Order Complete</h1>
+    <p>Thank you for booking with Fantastic Ferries! Your order has been successfully placed.</p>
+    <div class="order-complete-container">
+        <div class="order-details">
+            <h3>Booking Details</h3>
+            <p><strong>Destination:</strong> {{ route.destination }}</p>
+            <p><strong>Number of Passengers:</strong> {{ passengers }}</p>
+            <p><strong>Total Price:</strong> £{{ total_price }}</p>
+            <p><strong>Passenger Name:</strong> {{ passenger_name }}</p>
+            <p><strong>Email:</strong> {{ passenger_email }}</p>
+        </div>
+        <img src="{{ url_for('static', filename='images/fantastic_ferries.jpg') }}" alt="Order Complete Celebration" class="order-complete-image">
+    </div>
+    <p><a href="{{ url_for('home') }}" class="back-btn">Back to Home</a></p>
+{% endblock %}

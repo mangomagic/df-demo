@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "fantastic-ferries"
+version = "0.1.0"
+description = "A simple ferry ticket booking website"
+authors = ["mangomagic"]
+
+[tool.poetry.dependencies]
+python = "^3.8"  # Specify your Python version
+flask = "^2.0.0"  # Flask dependency
+gunicorn = "^23.0.0"
+
+[tool.poetry.dev-dependencies]
+# Add any development dependencies here if needed
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

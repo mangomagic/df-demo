@@ -1,0 +1,9 @@
+<!-- templates/about.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>About Us</h1>
+    <p>We are a ferry booking service providing reliable transportation to various island destinations.</p>
+    <p>Our mission is to make your travel experience smooth and enjoyable.</p>
+    <img src="{{ url_for('static', filename='images/fantastic_ferries.jpg') }}" alt="Fantastic Ferries" class="about-image">
+    <p><a href="{{ url_for('home') }}" class="back-btn">Back to Home</a></p>
+{% endblock %}

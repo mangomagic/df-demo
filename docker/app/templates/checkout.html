@@ -1,0 +1,26 @@
+<!-- templates/checkout.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>Checkout - {{ route.destination }}</h1>
+    <p>Number of Passengers: {{ passengers }}</p>
+    <p>Price per Passenger: £{{ route.price }}</p>
+    <p>Total: £{{ total_price }}</p>
+    <form method="POST" class="checkout-form">
+        <h3>Passenger Details</h3>
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" name="name" id="name" placeholder="Full Name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" placeholder="Email" required>
+        </div>
+        <h3>Payment Information</h3>
+        <div class="form-group">
+            <label for="card">Card Number:</label>
+            <input type="text" name="card" id="card" placeholder="Card Number" required>
+        </div>
+        <button type="submit" class="book-now-btn">Complete Booking</button>
+    </form>
+    <p><a href="{{ url_for('ticket', route_id=route.id) }}" class="back-btn">Back</a></p>
+{% endblock %}

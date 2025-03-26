@@ -1,0 +1,22 @@
+<!-- templates/home.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>Welcome to Fantastic Ferries</h1>
+    <p>Book your ferry tickets to various destinations!</p>
+    <h2>Available Routes</h2>
+    {% for route in routes %}
+        <div class="route-card">
+            <a href="{{ url_for('ticket', route_id=route.id) }}">
+                <img src="{{ url_for('static', filename='images/' + route.image) }}" alt="{{ route.destination }} Thumbnail">
+            </a>
+            <div>
+                <h3>{{ route.destination }}</h3>
+                <p>Price: £{{ route.price }}</p>
+                <p>Departure: {{ route.departure }}</p>
+            </div>
+            <div class="book-now">
+                <a href="{{ url_for('ticket', route_id=route.id) }}" class="book-now-btn">Book Now</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
