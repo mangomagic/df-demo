@@ -28,9 +28,6 @@ RUN wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh \
 COPY plugins.yaml /tmp/plugins.yaml
 COPY job_config.xml /var/jenkins_home/jobs/DotNetPipeline/config.xml
 
-# Create a minimal placeholder Jenkinsfile
-RUN echo "pipeline { agent any; stages { stage('Placeholder') { steps { echo 'Placeholder' } } } }" > /var/jenkins_home/Jenkinsfile
-
 # Set ownership to jenkins user
 RUN chown -R jenkins:jenkins /var/jenkins_home
 
@@ -47,44 +44,6 @@ RUN java -jar ${PLUGIN_MANAGER_PATH} \
     --plugin-file /tmp/plugins.yaml \
     --plugin-download-directory /usr/share/jenkins/ref/plugins \
     --verbose
-
-# Seed the job using Job DSL (requires Jenkins to be temporarily started)
-# RUN mkdir -p /var/jenkins_home/jobs/DotNetPipeline \
-#     && echo "java -jar /usr/share/jenkins/jenkins.war" > /tmp/start-jenkins.sh \
-#     && chmod +x /tmp/start-jenkins.sh \
-#     && /tmp/start-jenkins.sh & \
-#     sleep 30 \
-#     && wget -O /tmp/jenkins-cli.jar http://localhost:8080/jnlpJars/jenkins-cli.jar \
-#     && java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ -webSocket -auth admin:$(cat /var/jenkins_home/secrets/initialAdminPassword) groovy /tmp/seed.groovy \
-#     && pkill -f "java -jar /usr/share/jenkins/jenkins.war"
-
-# RUN mkdir -p /var/jenkins_home/jobs/DotNetPipeline \
-#     && echo "java -Djenkins.install.runSetupWizard=false -jar /usr/share/jenkins/jenkins.war" > /tmp/start-jenkins.sh \
-#     && chmod +x /tmp/start-jenkins.sh \
-#     && /tmp/start-jenkins.sh & \
-#     sleep 30 \
-#     && wget -O /tmp/jenkins-cli.jar http://localhost:8080/jnlpJars/jenkins-cli.jar \
-#     && java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ -webSocket who-am-i || echo "CLI debug failed" \
-#     && java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ -webSocket groovy /tmp/seed.groovy \
-#     && pkill -f "java -jar /usr/share/jenkins/jenkins.war"
-
-# RUN mkdir -p /var/jenkins_home/jobs/DotNetPipeline \
-#     && echo "java -jar /usr/share/jenkins/jenkins.war -Djenkins.install.runSetupWizard=false" > /tmp/start-jenkins.sh \
-#     && chmod +x /tmp/start-jenkins.sh \
-#     && /tmp/start-jenkins.sh & \
-#     sleep 60 \
-#     && wget -O /tmp/jenkins-cli.jar http://localhost:8080/jnlpJars/jenkins-cli.jar \
-#     && java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ -webSocket -auth admin:$(cat /var/jenkins_home/secrets/initialAdminPassword) groovy /tmp/seed.groovy \
-#     && pkill -f "java -jar /usr/share/jenkins/jenkins.war"
-
-# RUN mkdir -p /var/jenkins_home/jobs/DotNetPipeline \
-#     && echo "java -jar /usr/share/jenkins/jenkins.war -Djenkins.install.runSetupWizard=false" > /tmp/start-jenkins.sh \
-#     && chmod +x /tmp/start-jenkins.sh \
-#     && /tmp/start-jenkins.sh & \
-#     sleep 30 \
-#     && wget -O /tmp/jenkins-cli.jar http://localhost:8080/jnlpJars/jenkins-cli.jar \
-#     && java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ -webSocket -auth admin:password123 groovy /tmp/seed.groovy \
-#     && pkill -f "java -jar /usr/share/jenkins/jenkins.war"
 
 # Clean up
 RUN rm -rf /tmp/*
