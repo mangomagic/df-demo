@@ -1,0 +1,82 @@
+// Demo Architecture Diagram
+
+title AWS Monolithic .NET Framework Web Application Architecture
+
+// External Layer: Internet-facing components
+External Layer [icon: globe, color: blue] {
+  CloudFront [icon: aws-cloudfront, label: "CloudFront CDN"]
+  AWS WAF [icon: aws-waf, label: "WAF"]
+  Route 53 [icon: aws-route-53, label: "Route 53"]
+  ACM [icon: aws-acm]
+  S3 Static[icon: aws-s3, label: "S3 (Static Content)"]
+}
+
+// Monitoring and Logging
+Monitoring and Logging [icon: aws-s3, color: green] {
+  S3 Logs [icon: aws-s3, label: "S3 (Logs)"]
+  CloudWatch [icon: aws-cloudwatch, label: "CloudWatch"]
+}
+
+// VPC
+VPC [icon: aws-vpc, color: orange] {
+
+  // Public Subnets
+  "Public Subnets 1a/1b" [icon: aws-subnet-public, color: purple] {
+    NAT 1a [icon: aws-nat-gateway, label: "NAT Gateway 1a"]
+    ALB [icon: aws-alb, label: "Application Load Balancer 1a/1b"]
+    NAT 1b [icon: aws-nat-gateway, label: "NAT Gateway 1b"]
+  }
+
+  // App Private Subnets
+  "App Subnet 1b" [icon: aws-subnet-private, color: purple] {
+    EC2 Auto Scaling 1b [icon: aws-ec2-auto-scaling, label: "EC2 Auto Scaling Group"] {
+      EC2 Instance 1b [icon: aws-ec2, label: "EC2"]
+      IIS 1b [icon: monitor, label: "IIS"]
+    }
+  }
+  "App Subnet 1a" [icon: aws-subnet-private, color: purple] {
+    EC2 Auto Scaling 1a [icon: aws-ec2-auto-scaling, label: "EC2 Auto Scaling Group"] {
+      EC2 Instance 1a [icon: aws-ec2, label: "EC2"]
+      IIS 1a [icon: monitor, label: "IIS"]
+    }
+  }
+
+  // Data Layer Private Subnets
+  Data Layer [icon: aws-database, color: red] {
+    Data Subnet 1a [icon: aws-subnet-private, color: purple] {
+      ElastiCache 1a [icon: aws-elasticache, label: "Elasticache (Primary)"]
+      RDS SQL Server [icon: aws-rds, label: "SQL Server (Primary)"]
+    }
+    Data Subnet 1b [icon: aws-subnet-private, color: purple] {
+      ElastiCache 1b [icon: aws-elasticache, label: "Elasticache (Replica)"]
+      RDS SQL Server 1b [icon: aws-rds, label: "SQL Server (Standby)"]
+    }
+  }
+}
+
+// Connections
+
+// Users access the application via DNS routing to CloudFront
+Route 53 > CloudFront
+ACM > CloudFront
+AWS WAF > CloudFront
+S3 Static > CloudFront
+CloudFront > ALB
+
+// ALB forwards to App Subnets
+ALB > EC2 Auto Scaling 1a
+ALB > EC2 Auto Scaling 1b
+
+// App Layer, EC2 instances run IIS (hosting the .NET application)
+EC2 Instance 1a -- IIS 1a
+EC2 Instance 1b -- IIS 1b
+EC2 Instance 1a > NAT 1a
+EC2 Instance 1b > NAT 1b
+
+// The .NET application (via IIS) interacts with the data layer
+IIS 1a > Data Layer
+IIS 1b > Data Layer
+
+// General Infra logging CloudWatch monitoring
+VPC --> Monitoring and Logging
+External Layer --> Monitoring and Logging
