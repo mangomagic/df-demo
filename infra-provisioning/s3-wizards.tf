@@ -1,11 +1,15 @@
 # S3: "wizards" with versioning enabled
 resource "aws_s3_bucket" "wizards" {
-  bucket = "wizards"
+  bucket = "wizards-${var.environment}"
 
-  tags = {
-    Name        = "Wizards"
-    Environment = "Test"
-  }
+  tags = merge(
+    {
+      Name        = "Wizards"
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+    },
+    var.additional_tags
+  )
 }
 
 resource "aws_s3_bucket_versioning" "wizards_versioning" {

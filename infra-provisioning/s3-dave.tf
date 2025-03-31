@@ -1,11 +1,15 @@
 # S3: "Dave" with versioning disabled
 resource "aws_s3_bucket" "dave" {
-  bucket = "dave"
+  bucket = "dave-${var.environment}"
 
-  tags = {
-    Name        = "Dave"
-    Environment = "Test"
-  }
+  tags = merge(
+    {
+      Name        = "Dave"
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+    },
+    var.additional_tags
+  )
 }
 
 resource "aws_s3_bucket_versioning" "dave_versioning" {
