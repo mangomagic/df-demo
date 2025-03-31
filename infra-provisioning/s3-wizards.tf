@@ -2,14 +2,7 @@
 resource "aws_s3_bucket" "wizards" {
   bucket = "wizards-${var.environment}"
 
-  tags = merge(
-    {
-      Name        = "Wizards"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
-    },
-    var.additional_tags
-  )
+  tags = merge(local.bucket_tags, { Name = "Wizards" })
 }
 
 resource "aws_s3_bucket_versioning" "wizards_versioning" {

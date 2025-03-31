@@ -2,14 +2,7 @@
 resource "aws_s3_bucket" "cloudfront_logs" {
   bucket = "cloudfront-logs-${var.environment}"
 
-  tags = merge(
-    {
-      Name        = "CloudFront Logs"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
-    },
-    var.additional_tags
-  )
+  tags = merge(local.bucket_tags, { Name = "CloudFront Logs" })
 }
 
 resource "aws_s3_bucket_versioning" "cloudfront_logs_versioning" {

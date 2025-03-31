@@ -2,14 +2,7 @@
 resource "aws_s3_bucket" "dave" {
   bucket = "dave-${var.environment}"
 
-  tags = merge(
-    {
-      Name        = "Dave"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
-    },
-    var.additional_tags
-  )
+  tags = merge(local.bucket_tags, { Name = "Dave" })
 }
 
 resource "aws_s3_bucket_versioning" "dave_versioning" {
