@@ -65,7 +65,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudfront_logs_lifecycle" {
     }
 
     expiration {
-      days = 90
+      days = var.cloudfront_logs_retention_days
     }
   }
 }
